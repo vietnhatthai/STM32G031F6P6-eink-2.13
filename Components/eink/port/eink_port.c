@@ -32,3 +32,11 @@ void Eink_Port_SpiWrite(uint8_t *data, uint16_t len) {
         HAL_SPI_Transmit(eink_spi, data, len, HAL_MAX_DELAY);
     }
 }
+
+void Eink_Port_SpiWrite_DMA(uint8_t *data, uint16_t len) {
+    if (eink_spi != NULL) {
+        HAL_SPI_Transmit_DMA(eink_spi, data, len);
+        while (HAL_SPI_GetState(eink_spi) != HAL_SPI_STATE_READY) {
+        }
+    }
+}

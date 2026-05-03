@@ -131,14 +131,28 @@ void Eink_WriteWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *b
     uint32_t byte_count = (w * h) / 8;
     
     // 3. Ghi dữ liệu vào Black/White RAM (Lệnh 0x24)
+    // Eink_SendCmd(0x24);
+    // for(uint32_t i = 0; i < byte_count; i++) {
+    //     Eink_SendData(black_buffer[i]);
+    // }
+    
+    // 4. Ghi dữ liệu vào Red RAM (Lệnh 0x26)
+    // Eink_SendCmd(0x26);
+    // for(uint32_t i = 0; i < byte_count; i++) {
+    //     Eink_SendData(red_buffer[i]);
+    // }
+
+    // 3. Ghi dữ liệu vào Black/White RAM (Lệnh 0x24)
     Eink_SendCmd(0x24);
-    for(uint32_t i = 0; i < byte_count; i++) {
-        Eink_SendData(black_buffer[i]);
-    }
+    Eink_Port_Set_CS(0);
+    Eink_Port_Set_DC(1);
+    Eink_Port_SpiWrite_DMA(black_buffer, byte_count);
+    Eink_Port_Set_CS(1);
     
     // 4. Ghi dữ liệu vào Red RAM (Lệnh 0x26)
     Eink_SendCmd(0x26);
-    for(uint32_t i = 0; i < byte_count; i++) {
-        Eink_SendData(red_buffer[i]);
-    }
+    Eink_Port_Set_CS(0); 
+    Eink_Port_Set_DC(1);
+    Eink_Port_SpiWrite_DMA(red_buffer, byte_count);
+    Eink_Port_Set_CS(1);
 }
